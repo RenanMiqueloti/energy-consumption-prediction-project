@@ -4,7 +4,6 @@ This project aims to detect image forgery using convolutional neural networks (C
 
 ## Project Structure
 
-- `data/`: Contains sample images for testing.
 - `notebooks/`: Jupyter notebooks for exploration and model training.
 - `src/`: Python scripts for data preprocessing, model training, and making predictions.
 - `README.md`: Project documentation.
