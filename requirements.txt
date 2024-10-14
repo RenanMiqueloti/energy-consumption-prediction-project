@@ -1,3 +1,4 @@
 tensorflow
-opencv-python
+tensorflow_datasets
+numpy
 matplotlib

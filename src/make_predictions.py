@@ -4,18 +4,20 @@ import matplotlib.pyplot as plt
 def make_predictions(model, val_ds):
     predictions = []
     labels = []
-    for images, lbls in val_ds:
-        preds = model.predict(images)
+    images = []
+    for imgs, lbls in val_ds:
+        preds = model.predict(imgs)
         predictions.extend(np.argmax(preds, axis=1))
         labels.extend(lbls.numpy())
-    return predictions, labels
+        images.extend(imgs)
+    return images, labels, predictions
 
 def plot_predictions(images, labels, predictions, n=9):
     plt.figure(figsize=(10, 10))
     for i in range(n):
         ax = plt.subplot(3, 3, i + 1)
-        plt.imshow(images[i].numpy().astype("uint8"))
-        plt.title(f"True: {labels[i]}, Pred: {predictions[i]}")
+        plt.imshow(images[i])
+        plt.title(f"Verdadeiro: {labels[i]}, Predito: {predictions[i]}")
         plt.axis("off")
     plt.show()
 
