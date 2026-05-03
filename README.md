@@ -1,56 +1,75 @@
-# energy-consumption-prediction-project
+# image-classification-cnn
 
-Apesar do nome do repositorio, o codigo atual nao implementa previsao de consumo de energia. O estado atual do projeto e um pipeline de classificacao de imagens com TensorFlow usando o dataset CIFAR-10 via `tensorflow_datasets`.
+Experimento de visão computacional: classificador de imagens com **CNN sequencial** treinada no **CIFAR-10** usando TensorFlow.
 
-## Estado atual
+---
 
-Hoje o repositorio contem um experimento de visao computacional com:
+## Arquitetura da CNN
 
-- carregamento e preprocessamento de imagens
-- treinamento de uma CNN simples
-- geracao de predicoes no conjunto de validacao
-- visualizacao de resultados e historico de treino
+```
+Input (128×128×3)
+  → Conv2D(32, 3×3, relu) → MaxPooling2D
+  → Conv2D(64, 3×3, relu) → MaxPooling2D
+  → Conv2D(128, 3×3, relu)
+  → Flatten
+  → Dense(64, relu)
+  → Dense(10, softmax)   ← 10 classes CIFAR-10
+```
+
+Compilado com `adam` + `sparse_categorical_crossentropy`.
+
+---
+
+## Dataset — CIFAR-10
+
+10 classes: avião, automóvel, pássaro, gato, cervo, cachorro, sapo, cavalo, navio, caminhão.
+60.000 imagens 32×32 RGB (50k treino / 10k teste) — redimensionadas para 128×128 no pipeline.
+
+Carregamento via `tensorflow_datasets` com normalização `[0, 1]`, cache e prefetch automáticos.
+
+---
 
 ## Stack
 
-- Python
-- TensorFlow
-- tensorflow-datasets
-- NumPy
-- Matplotlib
+- Python 3.11
+- TensorFlow ≥ 2.15
+- tensorflow-datasets ≥ 4.9
+- NumPy ≥ 1.26
+- Matplotlib ≥ 3.8
+
+---
 
 ## Estrutura
 
-```text
-.
-|-- main.py
-|-- requirements.txt
-`-- src/
-    |-- data_preprocessing.py
-    |-- model_training.py
-    `-- make_predictions.py
 ```
+.
+├── main.py                    # Orquestra o fluxo completo
+├── requirements.txt
+└── src/
+    ├── data_preprocessing.py  # Carrega CIFAR-10, normaliza, batchifica
+    ├── model_training.py      # Constrói e treina a CNN
+    └── make_predictions.py    # Predições + plots de resultado
+```
+
+---
 
 ## Como executar
 
 ```bash
-git clone https://github.com/RenanMiqueloti/energy-consumption-prediction-project.git
-cd energy-consumption-prediction-project
+git clone https://github.com/RenanMiqueloti/image-classification-cnn.git
+cd image-classification-cnn
 python -m venv .venv
-.venv\Scripts\activate
+# Windows: .venv\Scripts\activate | Linux/Mac: source .venv/bin/activate
 pip install -r requirements.txt
 python main.py
 ```
 
-Na primeira execucao, o `tensorflow_datasets` pode baixar automaticamente o dataset usado no experimento.
+Na primeira execução o `tensorflow_datasets` baixa o CIFAR-10 automaticamente (~160 MB).
 
-## Fluxo do projeto
+---
 
-1. `src/data_preprocessing.py` carrega o CIFAR-10 e redimensiona as imagens.
-2. `src/model_training.py` monta e treina uma CNN sequencial.
-3. `src/make_predictions.py` executa predicoes e plota resultados.
-4. `main.py` orquestra o fluxo completo.
+## Saídas
 
-## Observacao importante
-
-Se a intencao deste repositorio for realmente previsao de consumo de energia, o nome e a documentacao historica nao refletem o codigo atual. Este README descreve o que esta versionado neste momento.
+- Accuracy e loss por epoch (treino e validação)
+- Grid 3×3 com imagens do conjunto de validação, label verdadeiro e predição
+- Curvas de aprendizado (training vs validation accuracy/loss)
